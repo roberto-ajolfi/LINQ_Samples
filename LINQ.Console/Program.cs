@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace LINQ.ConsoleApp
@@ -35,7 +36,6 @@ namespace LINQ.ConsoleApp
 
         static void Main(string[] args)
         {
-
             #region === Step 1 ===
 
             Console.WriteLine("=== LINQ ===");
@@ -98,7 +98,7 @@ namespace LINQ.ConsoleApp
             process.Completed += CompletedProcess;
 
             process.StartedCore += Process_StartedCore;
-            process.ProcessData();
+            //process.ProcessData();
 
             // DELEGATES
             Sum lamiaSomma = new Sum(PrimaSomma);
@@ -156,7 +156,7 @@ namespace LINQ.ConsoleApp
             };
 
             var result = employees.Where("ID", "1");
-            var result2 = employees.Where("Name", "Roberto");
+            var result2 = employees.Where("Name", "Roberto");           
 
             // value => value * value
 
@@ -176,7 +176,57 @@ namespace LINQ.ConsoleApp
             Func<int, int> funzione = squareExpression.Compile();
             Console.WriteLine(funzione(3));
 
+            var emp = EmployeeInt.Empty;
+
             #endregion
+
+            #region === Step 5 ===
+
+            var products = new List<Product>
+            {
+                new Product { ID = 1, ProductCode ="PC001" },
+                new Product { ID = 2, ProductCode ="PC001" },
+                new Product { ID = 1, ProductCode ="PC001" }
+            };
+
+            int resultCount1 = products.Select(s => s).Distinct().Count();
+            int resultCount1a = products.Select(s => s).Distinct(new ProductComparer()).Count();
+            int resultCount2 = products.Select(s => new { s.ID, s.ProductCode }).Distinct().Count();
+
+            Console.WriteLine($"{resultCount1} - {resultCount1a} - {resultCount2}");
+
+            #endregion
+
+            #region === Step 6 ===
+
+            List<Employee> objEmployee = new List<Employee>()
+            {
+                new Employee(){ Name="Ashish Sharma", Department="Marketing", Country="India"},
+                new Employee(){ Name="John Smith", Department="IT", Country="USA"},
+                new Employee(){ Name="Kim Jong", Department="Sales", Country="China"},
+                new Employee(){ Name="Marcia Adams", Department="HR", Country="USA"},
+                new Employee(){ Name="John Doe", Department="Operations", Country="Canada"}
+            };
+
+            var emp1 = objEmployee.ToLookup(x => x.Country);
+
+            Console.WriteLine("Grouping Employees by Country");
+            Console.WriteLine("---------------------------------");
+
+            foreach (var grouping in emp1)
+            {
+                Console.WriteLine(grouping.Key);
+
+                // Lookup employees by Country
+                foreach (var item in emp1[grouping.Key])
+                {
+                    Console.WriteLine("\t" + item.Name + "\t" + item.Department);
+                }
+            }
+
+            #endregion
+
+
         }
 
         #region === Misc Methods ===
@@ -250,8 +300,23 @@ namespace LINQ.ConsoleApp
         public string Name { get; set; }
     }
 
-    internal class EmployeeInt
+    internal class Employee {
+        public Employee() { }
+        //public Employee(string name, int age) { }
+        public Employee(string name) { Name = name; }
+
+        public string Name { get; set; }
+
+        public string Department { get; set; }
+        public string Country { get; set; }
+    }
+    internal class EmployeeInt : Employee
     {
+        public EmployeeInt(): base("") { }
+        public EmployeeInt(string name): base(name) { }
+
+        public static EmployeeInt Empty = new EmployeeInt();
+
         private int _id;
         public int ID
         {
@@ -266,8 +331,6 @@ namespace LINQ.ConsoleApp
                 _id = value;
             }
         }
-
-        public string Name { get; set; }
     }
 
     internal class EmployeeString
