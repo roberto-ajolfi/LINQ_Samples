@@ -1,5 +1,6 @@
 ﻿
 using LINQ.ClassLib;
+using LINQ.ConsoleApp.Esercitazione;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,6 +37,14 @@ namespace LINQ.ConsoleApp
 
         static void Main(string[] args)
         {
+            #region === ESERCITAZIONE ===
+
+            Esercizi.Esegui();
+
+            return;
+
+            #endregion
+
             #region === Step 1 ===
 
             Console.WriteLine("=== LINQ ===");
@@ -196,7 +205,7 @@ namespace LINQ.ConsoleApp
             Console.WriteLine($"{resultCount1} - {resultCount1a} - {resultCount2}");
 
             #endregion
-
+            
             #region === Step 6 ===
 
             List<Employee> objEmployee = new List<Employee>()
@@ -225,8 +234,6 @@ namespace LINQ.ConsoleApp
             }
 
             #endregion
-
-
         }
 
         #region === Misc Methods ===
@@ -283,7 +290,9 @@ namespace LINQ.ConsoleApp
 
     internal class MyString
     {
-        public string Value { get; set; }
+        public static string Empty = string.Empty;  // METODO DI CLASSE
+
+        public string Value { get; set; }   // Proprità d'Istanza
 
         public string ToUpper()
         {
